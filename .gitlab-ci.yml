@@ -1,0 +1,25 @@
+image: mcr.microsoft.com/playwright/python:v1.44.0-jammy
+
+stages:
+  - test
+
+cache:
+  paths:
+    - .cache/pip
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+run_tests:
+  stage: test
+  script:
+    - pip install pytest playwright==1.44.0 pytest-html
+    - pytest -s --junitxml=report.xml --html=report.html --self-contained-html
+  artifacts:
+    when: always
+    paths:
+      - report.html
+      - report.xml
+    reports:
+      junit: report.xml
+    expire_in: 1 week
